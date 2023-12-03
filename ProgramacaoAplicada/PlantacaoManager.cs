@@ -34,7 +34,7 @@ namespace PlantacaoMorangos
             using SQLiteCommand command = connection.CreateCommand();
             if (apenasCriticas)
             {
-                command.CommandText = @"SELECT * FROM Leituras WHERE (Temperatura > 30 AND Umidade <= 30)";
+                command.CommandText = @"SELECT * FROM Leituras WHERE (Temperatura > 30 AND Umidade < 30)";
             }
             else if (data.HasValue)
             {

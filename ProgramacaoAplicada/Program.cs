@@ -44,7 +44,9 @@ namespace PlantacaoMorangos
                 Console.WriteLine(" 1 - Buscar todas as leituras");
                 Console.WriteLine(" 2 - Buscar leituras críticas");
                 Console.WriteLine(" 3 - Buscar leituras a partir de uma data específica");
-                Console.WriteLine(" 4 - Gerar Leituras");
+                Console.WriteLine(" 4 - Buscar ordem cresceste");
+                Console.WriteLine(" 5 - Buscar datas com emergencias");
+                Console.WriteLine(" 6 - Gerar Leituras");
                 Console.WriteLine(" 0 - Sair");
                 Console.WriteLine("──────────────────────────────────────────────────────");
                 Console.WriteLine();
@@ -64,6 +66,12 @@ namespace PlantacaoMorangos
                         BuscarLeiturasData(plantacaoManager);
                         break;
                     case "4":
+                        BuscarOrdemCrescente(plantacaoManager);
+                        break;
+                    case "5":
+                        BuscarDatasEmergencia(plantacaoManager);
+                        break;
+                    case "6":
                         GerarLeituras(plantacaoManager);
                         break;
                     case "0":
@@ -152,6 +160,41 @@ namespace PlantacaoMorangos
             return DateTime.MinValue;
         }
 
+        private static void BuscarOrdemCrescente(PlantacaoManager plantacaoManager)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Buscar ordem cresceste");
+            Console.ResetColor();
+
+            List<Leitura> leituras = plantacaoManager.BuscarLeituras();
+            int i = 1;
+            foreach (Leitura leitura in leituras.OrderBy(l => l.DataHora).ThenBy(l => l.Temperatura))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Leitura {i}");
+                Console.ResetColor();
+                Console.WriteLine($"DataHora: {leitura.DataHora:dd/MM/yyy HH:mm:ss}, Ponto de Medição: {leitura.PontoMedicao}, Temperatura: {leitura.Temperatura}, Umidade: {leitura.Umidade}, Índice: {leitura.Indice}, Condicao: {leitura.Condicao}");
+                i++;
+            }
+        }
+
+        private static void BuscarDatasEmergencia(PlantacaoManager plantacaoManager)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Buscar datas com emergencias");
+            Console.ResetColor();
+
+            List<Leitura> leituras = plantacaoManager.BuscarLeituras(apenasCriticas: true);
+            int i = 1;
+            foreach (Leitura leitura in leituras)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Leitura {i}");
+                Console.ResetColor();
+                Console.WriteLine($"DataHora: {leitura.DataHora:dd/MM/yyy HH:mm:ss}, Ponto de Medição: {leitura.PontoMedicao}, Temperatura: {leitura.Temperatura}, Umidade: {leitura.Umidade}, Índice: {leitura.Indice}, Condicao: {leitura.Condicao}");
+                i++;
+            }
+        }
         private static void ConsoleWriteRed(string texto)
         {
             Console.ForegroundColor = ConsoleColor.Red;
