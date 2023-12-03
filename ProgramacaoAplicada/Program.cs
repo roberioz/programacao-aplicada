@@ -168,7 +168,8 @@ namespace PlantacaoMorangos
 
             List<Leitura> leituras = plantacaoManager.BuscarLeituras();
             int i = 1;
-            foreach (Leitura leitura in leituras.OrderBy(l => l.DataHora).ThenBy(l => l.Temperatura))
+
+            foreach (Leitura leitura in MergeSort(leituras))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Leitura {i}");
@@ -200,6 +201,83 @@ namespace PlantacaoMorangos
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(texto);
             Console.ResetColor();
+        }
+        public static List<Leitura> MergeSort(List<Leitura> leituras)
+        {
+            if (leituras.Count <= 1)
+            {
+                return new List<Leitura>();
+            }
+
+            int meio = leituras.Count / 2;
+            List<Leitura> metadeEsquerda = new List<Leitura>();
+            List<Leitura> metadeDireita = new List<Leitura>();
+
+            for (int i = 0; i < meio; i++)
+            {
+                metadeEsquerda.Add(leituras[i]);
+            }
+
+            for (int i = meio; i < leituras.Count; i++)
+            {
+                metadeDireita.Add(leituras[i]);
+            }
+
+            MergeSort(metadeEsquerda);
+            MergeSort(metadeDireita);
+
+            Merge(leituras, metadeEsquerda, metadeDireita);
+            return leituras;
+        }
+
+        private static void Merge(List<Leitura> leituras, List<Leitura> metadeEsquerda, List<Leitura> metadeDireita)
+        {
+            int i = 0;
+            int j = 0;
+            int k = 0;
+
+            while (i < metadeEsquerda.Count && j < metadeDireita.Count)
+            {
+                if (metadeEsquerda[i].DataHora < metadeDireita[j].DataHora)
+                {
+                    leituras[k] = metadeEsquerda[i];
+                    i++;
+                }
+                else if (metadeEsquerda[i].DataHora > metadeDireita[j].DataHora)
+                {
+                    leituras[k] = metadeDireita[j];
+                    j++;
+                }
+                else
+                {
+                    if (metadeEsquerda[i].Temperatura <= metadeDireita[j].Temperatura)
+                    {
+                        leituras[k] = metadeEsquerda[i];
+                        i++;
+                    }
+                    else
+                    {
+                        leituras[k] = metadeDireita[j];
+                        j++;
+                    }
+                }
+
+                k++;
+            }
+
+            while (i < metadeEsquerda.Count)
+            {
+                leituras[k] = metadeEsquerda[i];
+                i++;
+                k++;
+            }
+
+            while (j < metadeDireita.Count)
+            {
+                leituras[k] = metadeDireita[j];
+                j++;
+                k++;
+            }
         }
     }
 
