@@ -1,4 +1,6 @@
-﻿namespace PlantacaoMorangos
+﻿using System.Globalization;
+
+namespace PlantacaoMorangos
 {
 
     class Program
@@ -7,6 +9,7 @@
         {
             PlantacaoManager plantacaoManager = new();
 
+            GerarLeituras(plantacaoManager);
             IniciaMenu(plantacaoManager);
 
             Console.WriteLine();
@@ -138,10 +141,8 @@
 
             try
             {
-                if (DateTime.TryParse(dataString, out DateTime data))                
-                    return data;                
-                else                
-                    ConsoleWriteRed("Opção inválida.");
+                var culture = new CultureInfo("pt-BR");                              
+                return DateTime.ParseExact(dataString, "dd/MM/yyyy", culture);
             }
             catch (Exception)
             {
